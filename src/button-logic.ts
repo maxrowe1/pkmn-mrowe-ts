@@ -1,8 +1,26 @@
+import { Game } from './classes/Game';
 import {Pokemon} from './classes/Pokemon'
 
-class StateObject {
-  0: Pokemon
-  1: Pokemon
+export async function fetchGame<T>(url: string, method: string): Promise<T|null> {
+  const host: string = 'http://127.0.0.1:5000';
+
+  const headers: Headers = new Headers()
+  headers.set('Content-Type', 'application/json')
+  headers.set('Accept', 'application/json')
+
+  const request: RequestInfo = new Request(`${host}/${url}`, {
+    method: method,
+    headers: headers
+  })
+
+  try {
+    const res = await fetch(request);
+    const res_1 = await res.json();
+    return res_1;
+  } catch (e) {
+    console.error(e)
+    return null;
+  }
 }
 
 class StateManager {
@@ -45,29 +63,6 @@ export class Manager {
     //});
   }
 
-  fetchGET(url: string): Promise<StateObject> {
-    const host: string = 'http://127.0.0.1:5000';
-
-    const headers: Headers = new Headers()
-    headers.set('Content-Type', 'application/json')
-    headers.set('Accept', 'application/json')
-
-    const request: RequestInfo = new Request(`${host}/${url}`, {
-      method: 'GET',
-      headers: headers
-    })
-
-    // For our example, the data is stored on a static `users.json` file
-    return fetch(request)
-      // the JSON body is taken from the response
-      .then(res => res.json())
-      .then(res => {
-        // The response has an `any` type, so we need to cast
-        // it to the `User` type, and return it from the promise
-        return res as StateObject
-      })
-  }
-
   updateScreen() {
     let data = this.stateManager.getState();
     this.playerNameElement.textContent = data["player"]?.name!!;
@@ -75,9 +70,13 @@ export class Manager {
   }
 
   async getCombatants() {
-    const response = await this.fetchGET('game');
-    this.stateManager.setState("player", response[0]);
-    this.stateManager.setState("enemy", response[1]);
-    this.updateScreen();
+    const response = await fetchGame('game/new', 'GET') as Game;
+    if (response !== null) {
+      this.stateManager.setState("player", response.pokemon[0]);
+      this.stateManager.setState("enemy", response.pokemon[1]);
+      this.updateScreen();
+    } else {
+      alert("Fetch failed! Server may be down.")
+    }
   }
 }

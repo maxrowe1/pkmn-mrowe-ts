@@ -9,40 +9,28 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="dist/load.js" type="module"></script>
     <title>Play!</title>
-    <script src="dist/main.js" type="module"></script>
   </head>
   <body>
     <table>
         <tr>
-            <td id="enemy_name">Enemy Name</td>
-            <td colspan="3"></td>
+            <th colspan="100%">
+                Welcome to Max's Little Python Pomeon Game!
+            </th>
         </tr>
         <tr>
-          <td id="enemy_health" style="font-family: monospace;">
-            HP: [||||||||||||||||||]
-          </td>
-        </tr>
-        <tr><td style="font-family: monospace;">HP: [||||||||||||||&nbsp;&nbsp;&nbsp;&nbsp;]</td></tr>
-        <tr style="height: 100px;">
-          <td>&nbsp;</td><!-- Space in between -->
-        </tr>
-        <tr>
-        <td colspan="3"></td>
-          <td id="player_health" align="right" style="font-family: monospace;">
-            HP: [||||||||||||||||||]
-          </td>
+            <td style="width: 50%;">
+                <input id="game_id" type="number" title="ID of game played"/>
+            </td>
+            <td style="width: 50%;">
+                <button id="load_game" style="width: 100%;">Load Game</button>
+            </td>
         </tr>
         <tr>
-        <td colspan="3"></td>
-          <td id="player_name" align="right">Your Name</td>
-        </tr>
-        <tr>
-            <td colspan="4" style="border: solid;"><p id="message">What will you do?</p></td>
-        </tr>
-        <tr>
-        <td colspan="2"><button id="1" name="attack">Attack 1</button></td>
-        <td colspan="2"><button id="2" name="attack">Attack 2</button></td>
+            <td colspan="100%">
+                <button id="new_game" style="width: 100%;">New Game</button>
+            </td>
         </tr>
     </table>
   </body>
