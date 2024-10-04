@@ -4,7 +4,7 @@ import { Game } from "./classes/Game.js";
 export const game_state_key = 'game';
 
 export function getData() {
-    return JSON.parse(sessionStorage.getItem('game') ?? "{}");
+    return JSON.parse(sessionStorage.getItem(game_state_key) ?? "{}");
 }
 
 export function setData(data: Game) {

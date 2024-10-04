@@ -1,4 +1,5 @@
 import { combatantUseMove } from "./battle-logic.js";
+import { sendPutRequest } from "./button-logic.js";
 import { Response } from "./classes/Enums.js";
 import { Move } from "./classes/Move.js";
 import { getData } from "./utils.js";
@@ -42,8 +43,14 @@ async function messageDelay() {
 async function runResponses(move: Move, responses: Response[], user: HTMLElement, target: HTMLElement) {
     if (responses.includes(Response.HIT)) {
         // Attack hitting should run first
+        // TODO: Health blinks and changes color?
         await messageDelay();
     }
+
+    const target_name = target.textContent;
+    const stage_effect = move.stage_effect ? move.stage_effect : 0;
+    const stat_name = move.stat ? move.stat.toString() : '';
+
     for (const response of responses) {
         switch (response) {
             case Response.MISS:
@@ -51,7 +58,14 @@ async function runResponses(move: Move, responses: Response[], user: HTMLElement
                 break;
             case Response.STAT:
                 // [Pokemon]'s [stat] (2:greatly) [rose|fell] (3:drastically)!
-                messageDisplay.textContent = `${target.textContent}'s ${move.stat?.toString()} ${Math.abs(move.stage_effect!!) == 2 ? 'greatly ' : ''}${move.stage_effect!! > 0 ? 'rose' : 'fell'}${Math.abs(move.stage_effect!!) == 3 ? ' drastically!' : ''}!`
+                messageDisplay.textContent = `${target_name}'s ${stat_name} ${Math.abs(stage_effect) == 2 ? 'greatly ' : ''}${stage_effect > 0 ? 'rose' : 'fell'}${Math.abs(stage_effect) == 3 ? ' drastically!' : ''}!`
+                break;
+            case Response.STAT_FAIL:
+                if (!responses.includes(Response.HIT)) {
+                    // Message does not display if move hits but its stat change does not happen
+                    // [Pokémon]'s [stat] won't go higher/lower!
+                    messageDisplay.textContent = `${target_name}'s ${stat_name} won't go ${stage_effect > 0 ? 'higher': 'lower'}!`
+                }
                 break;
             default:
                 continue;
@@ -70,12 +84,16 @@ async function useMove(this: HTMLButtonElement, ev: Event) {
     messageDisplay.textContent = `${player_name.textContent} used ${move.name}!`
     const responses = await combatantUseMove(0, move);
     console.log("Player move is complete.");
+    await messageDelay();
 
     await runResponses(move, responses, player_name, enemy_name);
 
     updateHealthDisplay();
     hideMoveButtons(false);
     resetMessage();
+
+    // TODO: Save after both moves are complete
+    sendPutRequest(getData()).catch(console.error);
 }
 
 function updateHealthDisplay() {

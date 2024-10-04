@@ -36,5 +36,6 @@ export enum Stat {
 export enum Response {
     HIT,
     MISS,
-    STAT
+    STAT,
+    STAT_FAIL,
 }

@@ -1,4 +1,3 @@
-import { sendPutRequest } from "./button-logic.js";
 import { Category, Stat, Response } from "./classes/Enums.js";
 import { Move } from "./classes/Move.js";
 import { PokemonCombatant } from "./classes/PokemonCombatant.js";
@@ -102,7 +101,6 @@ export async function combatantUseMove(combatant_index:number, move: Move): Prom
         const rand_accuracy = Math.random() * 100
         if (rand_accuracy > move.accuracy) {
             // Move missed; no changes
-            sendPutRequest(data).catch(console.error);
             return [Response.MISS];
         }
     }
@@ -142,11 +140,15 @@ export async function combatantUseMove(combatant_index:number, move: Move): Prom
         // TODO: response.concat -- Attack causes stat effect
     } else {
         // Target is affected by stat changes
+        const current_stage = target.stats[move.stat!!].stage
         modifyStage(target, move);
-        response = [Response.STAT];
+        if (current_stage != target.stats[move.stat!!].stage) {
+            response = [Response.STAT];
+        } else {
+            response = [Response.STAT_FAIL];
+        }
     }
 
-    sendPutRequest(data).catch(console.error);
     setData(data);
     return response;
 }
