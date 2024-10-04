@@ -18,14 +18,14 @@ combatantNames = {
 
 let attackButtons = Array.from(document.getElementsByName("attack"));
 attackButtons.forEach((attackButton) => {
-    attackButton?.addEventListener("click", useMove);
+    attackButton?.addEventListener("click", selectMove);
 })
 
 const messageDisplay = document.getElementById("message") as HTMLElement;
 
-function getPlayerMove(index: number) {
-    return getData().pokemon[0].moves.find((move: Move) => {
-        return move.number == index;
+function getCombatantMove(combatant_index:number, move_number: number) {
+    return getData().pokemon[combatant_index].moves.find((move: Move) => {
+        return move.number == move_number;
     })
 }
 
@@ -85,19 +85,23 @@ async function runResponses(move: Move, responses: Response[], userIndex: number
     }
 }
 
-async function useMove(this: HTMLButtonElement, ev: Event) {
+async function useMove(combatant_index: number, move_number: number) {
+    const move = getCombatantMove(0, move_number);
+    messageDisplay.textContent = `${combatantNames[combatant_index].textContent} used ${move.name}!`
+    const responses = await combatantUseMove(combatant_index, move);
+    console.log("Player move is complete.");
+    await messageDelay();
+    await runResponses(move, responses, 0, 1);
+}
+
+async function selectMove(this: HTMLButtonElement, ev: Event) {
     // TODO: Speed determines who goes first
     ev.preventDefault();
     hideMoveButtons(true);
 
+    // Player uses move
     const move_id = Number(this.id);
-    const move = getPlayerMove(move_id);
-    messageDisplay.textContent = `${combatantNames[0].textContent} used ${move.name}!`
-    const responses = await combatantUseMove(0, move);
-    console.log("Player move is complete.");
-    await messageDelay();
-
-    await runResponses(move, responses, 0, 1);
+    await useMove(0, move_id);
 
     hideMoveButtons(false);
     resetMessage();
@@ -139,7 +143,7 @@ function initialize() {
     combatantNames[1].textContent = data.pokemon[1].pokemon.name;
 
     attackButtons.forEach((attackButton) => {
-        attackButton.textContent = getPlayerMove(Number(attackButton.id))?.name;
+        attackButton.textContent = getCombatantMove(0, Number(attackButton.id))?.name;
         if (!attackButton.textContent) {
             attackButton.hidden = true;
         }
