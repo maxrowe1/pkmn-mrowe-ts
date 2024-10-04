@@ -32,3 +32,9 @@ export enum Stat {
     SP_DEFENSE,
     SPEED
 }
+
+export enum Response {
+    HIT,
+    MISS,
+    STAT
+}

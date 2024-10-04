@@ -13,5 +13,8 @@
   },
   "scripts": {
     "test": "jest"
+  },
+  "dependencies": {
+    "kafkajs": "^2.2.4"
   }
 }

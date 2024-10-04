@@ -1,6 +1,6 @@
-import { Pokemon } from "./Pokemon";
+import { PokemonCombatant } from "./PokemonCombatant";
 
 export class Game {
     id!: number;
-    pokemon!: Pokemon[];
+    pokemon!: Map<number, PokemonCombatant>;
 }

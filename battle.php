@@ -1,7 +1,14 @@
 <?
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
+header('Access-Control-Allow-Headers: Origin, Content-Type, X-Requested-With, X-Auth-Token, Authorization');
+
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+  // If it's a preflight request, return a 200 response
+  http_response_code(200);
+  exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,12 +27,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
         </tr>
         <tr>
           <td style="font-family: monospace;">
-            HP: <span id="enemy_health" style="color:green">&#9608;&#9608;||||||||||||||||</span>
-          </td>
-        </tr>
-        <tr>
-          <td style="font-family: monospace;">
-            HP: <span id="enemy_health" style="color:green">&#9608;&#9610;||||||||||||&nbsp;&nbsp;&nbsp;&nbsp;
+            HP: <span id="enemy_health" style="color:green">||||||||||||||||||||</span>
           </td>
         </tr>
         <tr style="height: 100px;">
@@ -45,8 +47,12 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
             <td colspan="4" style="border: solid;"><p id="message">What will you do?</p></td>
         </tr>
         <tr>
-        <td colspan="2"><button id="1" name="attack">Attack 1</button></td>
-        <td colspan="2"><button id="2" name="attack">Attack 2</button></td>
+          <td colspan="2"><button id="1" name="attack" style="width: 100%;">Attack 1</button></td>
+          <td colspan="2"><button id="2" name="attack" style="width: 100%;">Attack 2</button></td>
+        </tr>
+        <tr>
+          <td colspan="2"><button id="3" name="attack" style="width: 100%;">Attack 3</button></td>
+          <td colspan="2"><button id="4" name="attack" style="width: 100%;">Attack 4</button></td>
         </tr>
     </table>
   </body>
