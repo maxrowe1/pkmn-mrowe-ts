@@ -10,15 +10,18 @@ healthDisplays = {
     1: document.getElementById("enemy_health") as HTMLElement
 }
 
+let combatantNames: { [key: number]: HTMLElement }
+combatantNames = {
+    0: document.getElementById("player_name") as HTMLElement,
+    1: document.getElementById("enemy_name") as HTMLElement
+}
+
 let attackButtons = Array.from(document.getElementsByName("attack"));
 attackButtons.forEach((attackButton) => {
     attackButton?.addEventListener("click", useMove);
 })
 
 const messageDisplay = document.getElementById("message") as HTMLElement;
-
-const player_name = document.getElementById("player_name") as HTMLElement;
-const enemy_name = document.getElementById("enemy_name") as HTMLElement;
 
 function getPlayerMove(index: number) {
     return getData().pokemon[0].moves.find((move: Move) => {
@@ -36,25 +39,33 @@ function resetMessage() {
     messageDisplay.textContent = "What will you do?";
 }
 
-async function messageDelay() {
-    await new Promise(f => setTimeout(f, 3000));
+async function messageDelay(ms: number = 3000) {
+    await new Promise(f => setTimeout(f, ms));
 }
 
-async function runResponses(move: Move, responses: Response[], user: HTMLElement, target: HTMLElement) {
+async function runResponses(move: Move, responses: Response[], userIndex: number, targetIndex: number) {
     if (responses.includes(Response.HIT)) {
         // Attack hitting should run first
         // TODO: Health blinks and changes color?
-        await messageDelay();
+        updateHealthDisplay();
+        for (let i = 0; i < 4; i++) {
+            // Health bar blinks
+            healthDisplays[targetIndex].hidden = true;
+            await messageDelay(100);
+            healthDisplays[targetIndex].hidden = false;
+            await messageDelay(100);
+        }
+
     }
 
-    const target_name = target.textContent;
+    const target_name = combatantNames[targetIndex].textContent;
     const stage_effect = move.stage_effect ? move.stage_effect : 0;
     const stat_name = move.stat ? move.stat.toString() : '';
 
     for (const response of responses) {
         switch (response) {
             case Response.MISS:
-                messageDisplay.textContent = `${user.textContent}'s attack missed!`
+                messageDisplay.textContent = `${combatantNames[userIndex].textContent}'s attack missed!`
                 break;
             case Response.STAT:
                 // [Pokemon]'s [stat] (2:greatly) [rose|fell] (3:drastically)!
@@ -81,14 +92,13 @@ async function useMove(this: HTMLButtonElement, ev: Event) {
 
     const move_id = Number(this.id);
     const move = getPlayerMove(move_id);
-    messageDisplay.textContent = `${player_name.textContent} used ${move.name}!`
+    messageDisplay.textContent = `${combatantNames[0].textContent} used ${move.name}!`
     const responses = await combatantUseMove(0, move);
     console.log("Player move is complete.");
     await messageDelay();
 
-    await runResponses(move, responses, player_name, enemy_name);
+    await runResponses(move, responses, 0, 1);
 
-    updateHealthDisplay();
     hideMoveButtons(false);
     resetMessage();
 
@@ -101,9 +111,16 @@ function updateHealthDisplay() {
     [0,1].forEach(index => {
         const combatant = pokemon[index]
         const healthPercentage = (combatant.hp_current / combatant.hp_max) * 100;
+        if (healthPercentage > 50) {
+            healthDisplays[index].style["color"] = "green";
+        } else if (healthPercentage > 25) {
+            healthDisplays[index].style["color"] = "orange";
+        } else {
+            healthDisplays[index].style["color"] = "red";
+        }
 
         let healthDisplay = ""
-        for (let i = 0; i < 100; i +=5) {
+        for (let i = 0; i < 100; i += 2) {
             if (healthPercentage > i) {
                 healthDisplay += "\u2588"
             } else {
@@ -118,8 +135,8 @@ function initialize() {
     const data = getData();
     const player = data.pokemon[0];
 
-    player_name.textContent = player.pokemon.name;
-    enemy_name.textContent = data.pokemon[1].pokemon.name;
+    combatantNames[0].textContent = player.pokemon.name;
+    combatantNames[1].textContent = data.pokemon[1].pokemon.name;
 
     attackButtons.forEach((attackButton) => {
         attackButton.textContent = getPlayerMove(Number(attackButton.id))?.name;

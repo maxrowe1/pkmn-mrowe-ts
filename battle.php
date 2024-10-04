@@ -20,40 +20,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     <script src="dist/main.js" type="module"></script>
   </head>
   <body>
-    <table>
-        <tr>
-            <td id="enemy_name">Enemy Name</td>
-            <td colspan="3"></td>
-        </tr>
-        <tr>
-          <td style="font-family: monospace;">
-            HP: <span id="enemy_health" style="color:green">||||||||||||||||||||</span>
-          </td>
-        </tr>
-        <tr style="height: 100px;">
-          <td>&nbsp;</td><!-- Space in between -->
-        </tr>
-        <tr>
-        <td colspan="3"></td>
-          <td align="right" style="font-family: monospace;">
-            HP: <span id="player_health" style="color:green">||||||||||||||||||</span>
-          </td>
-        </tr>
-        <tr>
-        <td colspan="3"></td>
-          <td id="player_name" align="right">Your Name</td>
-        </tr>
-        <tr>
-            <td colspan="4" style="border: solid;"><p id="message">What will you do?</p></td>
-        </tr>
-        <tr>
-          <td colspan="2"><button id="1" name="attack" style="width: 100%;">Attack 1</button></td>
-          <td colspan="2"><button id="2" name="attack" style="width: 100%;">Attack 2</button></td>
-        </tr>
-        <tr>
-          <td colspan="2"><button id="3" name="attack" style="width: 100%;">Attack 3</button></td>
-          <td colspan="2"><button id="4" name="attack" style="width: 100%;">Attack 4</button></td>
-        </tr>
+    <table style="table-layout: fixed; width:40em; margin-left:auto; margin-right:auto;">
+      <tr>
+        <td style="width: 50%;"></td>
+        <td style="width: 50%;"></td>
+      </tr>
+      <tr>
+          <td id="enemy_name" colspan="2">Enemy Name</td>
+      </tr>
+      <tr>
+        <td colspan="2" style="font-family: monospace;">
+          HP: <span id="enemy_health" style="color:green">||||||||||||||||||||</span>
+        </td>
+      </tr>
+      <tr style="height: 100px;">
+        <td>&nbsp;</td><!-- Space in between -->
+      </tr>
+      <tr>
+        <td colspan="2" align="right" style="font-family: monospace;">
+          HP: <span id="player_health" style="color:green">||||||||||||||||||</span>
+        </td>
+      </tr>
+      <tr>
+        <td id="player_name" colspan="2" align="right">Your Name</td>
+      </tr>
+      <tr>
+        <td colspan="2" style="border: solid;"><p id="message" style="padding-left: 10px;">What will you do?</p></td>
+      </tr>
+      <tr>
+        <td><button id="1" name="attack" style="width: 100%;">Attack 1</button></td>
+        <td><button id="2" name="attack" style="width: 100%;">Attack 2</button></td>
+      </tr>
+      <tr>
+        <td><button id="3" name="attack" style="width: 100%;">Attack 3</button></td>
+        <td><button id="4" name="attack" style="width: 100%;">Attack 4</button></td>
+      </tr>
     </table>
   </body>
   <script>var exports = {"__esModule": true};</script>
