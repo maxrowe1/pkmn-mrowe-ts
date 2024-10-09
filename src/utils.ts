@@ -1,4 +1,4 @@
-import { Category } from "./classes/Enums.js";
+import { Category } from "./classes/Enums";
 import { Game } from "./classes/Game.js";
 
 export const game_state_key = 'game';
